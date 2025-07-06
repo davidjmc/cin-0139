@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador REST</title>
+</head>
+<body>
+    <h3>Contador: <span id="c">0</span></h3>
+    <button id="btn">+1</button>
+    
+    <script>
+        async function refresh() {
+            const resposta = await fetch('/contador');
+            const data = await resposta.json()
+            document.getElementById('c').textContent = data.contador;
+        }
+
+        document.getElementById('btn').onclick = async () => {
+            await fetch('contador/incremento', {method: 'POST'});
+            refresh();
+        };
+        
+        refresh();
+    </script>
+</body>
+</html>
