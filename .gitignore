@@ -1,0 +1,8 @@
+# Node.js
+node_modules/
+package-lock.json
+package.json
+yarn.lock # Se você usa Yarn em vez de npm
+
+# Python
+/venv

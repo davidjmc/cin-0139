@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador WebSocket</title>
+</head>
+<body>
+    <h3>Contador: <span id="c">0</span></h3>
+    <button id="btn">+1</button>
+
+  <script>
+    const url = 'ws://localhost:4000';
+    const c = document.getElementById('c');
+    const btn = document.getElementById('btn');
+    let ws;
+
+    function connect() {
+      ws = new WebSocket(url);
+
+      ws.onopen = () => {
+        console.log('Conectado');
+        ws.send('contador');
+      };
+
+      ws.onmessage = ev => {
+        const data = JSON.parse(ev.data);
+        if (data.contador !== undefined) {
+          c.textContent = data.contador;
+        }
+      };
+
+      ws.onclose = () => {
+        console.log('Desconectado. Reconectando...');
+        setTimeout(connect, 5000);
+      };
+
+      ws.onerror = err => console.error('Erro no WS:', err);
+    }
+
+    btn.onclick = () => {
+      if (ws?.readyState === WebSocket.OPEN) {
+        ws.send('incremento');
+      }
+    };
+
+    connect();
+  </script>
+</body>
+</html>
