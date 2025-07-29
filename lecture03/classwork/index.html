@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contador MQTT</title>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+</head>
+<body>
+    <h3>Contador: <span id="c">0</span></h3>
+    <button id="btn">+1</button>
+
+  <script>
+    const url = 'ws://broker.hivemq.com:8000/mqtt';
+    const c = document.getElementById('c');
+    const btn = document.getElementById('btn');
+    
+    const client = mqtt.connect(url);
+
+    client.on('connect', () => {
+        console.log('Conectado ao broker MQTT.');
+        client.subscribe('sisteminha/contador/valor');
+    });
+
+    client.on('message', (topic, message) => {
+        if (topic === 'sisteminha/contador/valor') {
+            const data = JSON.parse(message.toString());
+            c.textContent = data.valor;
+        }
+    });
+
+    btn.onclick = () => {
+        client.publish('sisteminha/contador/incrementar', JSON.stringify({ acao: 'incrementar' }));
+    };
+  </script>
+</body>
+</html>
