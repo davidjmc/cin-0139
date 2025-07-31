@@ -8,12 +8,19 @@
 <body>
     <h3>Contador: <span id="c">0</span></h3>
     <button id="btn">+1</button>
+    <h3>Latency: <span id="latency">0</span></h3>
+
     
     <script>
         async function refresh() {
+            const start = performance.now();
             const resposta = await fetch('/contador');
             const data = await resposta.json()
+            const end = performance.now();
+            const latency = end - start;
+
             document.getElementById('c').textContent = data.contador;
+            document.getElementById('latency').textContent = latency.toFixed(2);
         }
 
         document.getElementById('btn').onclick = async () => {
@@ -21,6 +28,7 @@
             refresh();
         };
         
+        document.getElementById('latency').textContent = latency.toFixed(2);
         refresh();
     </script>
 </body>
